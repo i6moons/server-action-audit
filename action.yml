@@ -1,0 +1,27 @@
+name: Server Action Audit
+description: Find Next.js Server Actions without an authorization check, as annotations on your pull requests.
+branding:
+  icon: shield
+  color: red
+
+inputs:
+  path:
+    description: Directory of the Next.js app.
+    default: .
+  fail-on:
+    description: unprotected, unvalidated or never.
+    default: unprotected
+  version:
+    description: Version of server-action-audit from npm.
+    default: latest
+
+runs:
+  using: composite
+  steps:
+    - name: Audit Server Actions
+      shell: bash
+      env:
+        AUDIT_PATH: ${{ inputs.path }}
+        AUDIT_FAIL_ON: ${{ inputs.fail-on }}
+        AUDIT_VERSION: ${{ inputs.version }}
+      run: npx --yes "server-action-audit@${AUDIT_VERSION}" "${AUDIT_PATH}" --format github --fail-on "${AUDIT_FAIL_ON}"

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="749" height="427" viewBox="0 0 749 427" role="img" aria-label="server-action-audit output">
+<rect width="749" height="427" rx="10" fill="#1a1b26"/>
+<circle cx="22" cy="20" r="6" fill="#ff5f56"/><circle cx="42" cy="20" r="6" fill="#ffbd2e"/><circle cx="62" cy="20" r="6" fill="#27c93f"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" xml:space="preserve">
+<text y="52"><tspan x="22" fill="#9aa5ce">$</tspan><tspan x="39.2" fill="#e6e6e6">npx server-action-audit</tspan></text>
+<text y="73"></text>
+<text y="94"><tspan x="22.0" fill="#e6e6e6" font-weight="700">server-action-audit · 6 Server Actions in 3 files</tspan></text>
+<text y="115"></text>
+<text y="136"><tspan x="22.0" fill="#e6e6e6" font-weight="700">app/(auth)/actions.ts</tspan></text>
+<text y="157"><tspan x="22.0" fill="#e6e6e6">  </tspan><tspan x="39.2" fill="#fcc419">!</tspan><tspan x="47.8" fill="#e6e6e6"> login  </tspan><tspan x="116.6" fill="#e6e6e6" fill-opacity="0.55">6:1    </tspan><tspan x="176.8" fill="#e6e6e6"> </tspan><tspan x="185.4" fill="#4dabf7">public (@public-action)</tspan><tspan x="383.2" fill="#e6e6e6" fill-opacity="0.55"> · </tspan><tspan x="409.0" fill="#fcc419">input not validated</tspan></text>
+<text y="178"></text>
+<text y="199"><tspan x="22.0" fill="#e6e6e6" font-weight="700">app/(dashboard)/posts/actions.ts</tspan></text>
+<text y="220"><tspan x="22.0" fill="#e6e6e6">  </tspan><tspan x="39.2" fill="#51cf66">✓</tspan><tspan x="47.8" fill="#e6e6e6"> createPost   </tspan><tspan x="168.2" fill="#e6e6e6" fill-opacity="0.55">10:1   </tspan><tspan x="228.4" fill="#e6e6e6"> </tspan><tspan x="237.0" fill="#e6e6e6" fill-opacity="0.55">getCurrentUserOrRedirect() → auth()</tspan></text>
+<text y="241"><tspan x="22.0" fill="#e6e6e6">  </tspan><tspan x="39.2" fill="#ff6b6b">✗</tspan><tspan x="47.8" fill="#e6e6e6"> deletePost   </tspan><tspan x="168.2" fill="#e6e6e6" fill-opacity="0.55">16:1   </tspan><tspan x="228.4" fill="#e6e6e6"> </tspan><tspan x="237.0" fill="#ff6b6b">no auth check</tspan><tspan x="348.8" fill="#e6e6e6" fill-opacity="0.55"> · </tspan><tspan x="374.6" fill="#fcc419">input not validated</tspan></text>
+<text y="262"><tspan x="22.0" fill="#e6e6e6">  </tspan><tspan x="39.2" fill="#fcc419">!</tspan><tspan x="47.8" fill="#e6e6e6"> updatePost   </tspan><tspan x="168.2" fill="#e6e6e6" fill-opacity="0.55">20:1   </tspan><tspan x="228.4" fill="#e6e6e6"> </tspan><tspan x="237.0" fill="#e6e6e6" fill-opacity="0.55">getCurrentUserOrRedirect() → auth()</tspan><tspan x="538.0" fill="#e6e6e6" fill-opacity="0.55"> · </tspan><tspan x="563.8" fill="#fcc419">input not validated</tspan></text>
+<text y="283"><tspan x="22.0" fill="#e6e6e6">  </tspan><tspan x="39.2" fill="#51cf66">✓</tspan><tspan x="47.8" fill="#e6e6e6"> publishPost  </tspan><tspan x="168.2" fill="#e6e6e6" fill-opacity="0.55">25:1   </tspan><tspan x="228.4" fill="#e6e6e6"> </tspan><tspan x="237.0" fill="#e6e6e6" fill-opacity="0.55">authActionClient client</tspan></text>
+<text y="304"></text>
+<text y="325"><tspan x="22.0" fill="#e6e6e6" font-weight="700">app/page.tsx</tspan></text>
+<text y="346"><tspan x="22.0" fill="#e6e6e6">  </tspan><tspan x="39.2" fill="#ff6b6b">✗</tspan><tspan x="47.8" fill="#e6e6e6"> (inline action)  </tspan><tspan x="202.6" fill="#e6e6e6" fill-opacity="0.55">4:15   </tspan><tspan x="262.8" fill="#e6e6e6"> </tspan><tspan x="271.4" fill="#ff6b6b">no auth check</tspan><tspan x="383.2" fill="#e6e6e6" fill-opacity="0.55"> · </tspan><tspan x="409.0" fill="#fcc419">input not validated</tspan></text>
+<text y="367"></text>
+<text y="388"><tspan x="22.0" fill="#ff6b6b">✗ 2 unprotected</tspan><tspan x="151.0" fill="#e6e6e6" fill-opacity="0.55">  ·  </tspan><tspan x="194.0" fill="#51cf66">✓ 3 protected</tspan><tspan x="305.8" fill="#e6e6e6" fill-opacity="0.55">  ·  </tspan><tspan x="348.8" fill="#4dabf7">○ 1 public</tspan><tspan x="434.8" fill="#e6e6e6" fill-opacity="0.55">  ·  </tspan><tspan x="477.8" fill="#fcc419">! 4 with unvalidated input</tspan></text>
+</g></svg>
