@@ -31,7 +31,7 @@
     "node": ">=20"
   },
   "bin": {
-    "server-action-audit": "./dist/cli.js"
+    "server-action-audit": "dist/cli.js"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
