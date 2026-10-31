@@ -127,6 +127,59 @@ export function formatGithub(report: ProjectReport): string {
   return lines.join('\n')
 }
 
+/**
+ * Markdown, for a pull request comment or a job summary. With `sourceUrl` (a URL ending in `/` that the
+ * report's file paths can be appended to), each location links to the code.
+ */
+export function formatMarkdown(report: ProjectReport, options: { sourceUrl?: string; limit?: number } = {}): string {
+  const { summary } = report
+  const fileCount = report.files.length
+  const total = `${summary.actions} Server Action${summary.actions === 1 ? '' : 's'} in ${fileCount} file${fileCount === 1 ? '' : 's'}`
+  const lines = ['### server-action-audit', '']
+  const found = report.files.flatMap(({ file, actions }) =>
+    actions.filter((action) => action.status === 'unprotected' || action.validated === false).map((action) => ({ file, action })),
+  )
+
+  if (!summary.actions) lines.push('No Server Actions found.')
+  else if (!found.length) lines.push(`✅ ${total}, no problems found.`)
+  else {
+    lines.push(
+      [
+        summary.unprotected ? `**❌ ${summary.unprotected} unprotected**` : '0 unprotected',
+        `${summary.protected} protected`,
+        `${summary.public} public`,
+        summary.unvalidated ? `**⚠️ ${summary.unvalidated} with unvalidated input**` : '0 with unvalidated input',
+      ].join(' · ') + ` (${total})`,
+      '',
+      '| | Action | Where | Problem |',
+      '| --- | --- | --- | --- |',
+    )
+    // Table cells end at a pipe, even inside code spans
+    const cell = (text: string) => text.replace(/\|/g, '\\|')
+    const segment = (part: string) => encodeURIComponent(part).replace(/[()!'*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)
+    const limit = options.limit ?? 50
+    for (const { file, action } of found.slice(0, limit)) {
+      const where = `${file}:${action.line}`
+      const link = options.sourceUrl ? `[${cell(where)}](${options.sourceUrl}${file.split('/').map(segment).join('/')}#L${action.line})` : `\`${cell(where)}\``
+      const unprotected = action.status === 'unprotected'
+      const problem = [unprotected && 'No authorization check', action.validated === false && (unprotected ? 'input not validated' : 'Input not validated')].filter(Boolean).join(', ')
+      lines.push(`| ${unprotected ? '❌' : '⚠️'} | \`${cell(action.name)}\` | ${link} | ${problem} |`)
+    }
+    if (found.length > limit) lines.push('', `…and ${found.length - limit} more. Run \`npx server-action-audit\` to see them all.`)
+    if (summary.unprotected) {
+      lines.push(
+        '',
+        'Every Server Action is a public endpoint: anyone can call it with a POST request. Check the session inside each action, or mark intentional ones with `// @public-action`. See the [Next.js data security guide](https://nextjs.org/docs/app/guides/data-security).',
+      )
+    }
+  }
+
+  if (report.errors.length) {
+    lines.push('', `Skipped ${report.errors.length} file${report.errors.length === 1 ? '' : 's'} that could not be parsed: ${report.errors.map((error) => `\`${error.file}\``).join(', ')}.`)
+  }
+  return lines.join('\n')
+}
+
 /** SARIF 2.1.0, for GitHub code scanning and other security dashboards. */
 export function formatSarif(report: ProjectReport, version: string): string {
   const rules = [

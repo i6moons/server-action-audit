@@ -115,6 +115,22 @@ jobs:
           fail-on: unprotected
 ```
 
+To also get the report as a comment on the pull request, set `comment: true` and let the job write to pull requests. The action keeps a single comment and updates it on every push. It only comments once there is something to fix. If the job can't comment (pull requests from forks only get a read-only token), it shows a warning and the audit result stays the same.
+
+```yaml
+jobs:
+  server-actions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: i6moons/server-action-audit@v0
+        with:
+          comment: true
+```
+
 For GitHub code scanning (the Security tab), upload the SARIF output:
 
 ```yaml
@@ -135,6 +151,8 @@ For GitHub code scanning (the Security tab), upload the SARIF output:
 | `--format json` | Machine-readable output (`--json` works too) |
 | `--format github` | GitHub Actions annotations |
 | `--format sarif` | SARIF 2.1.0, for code scanning |
+| `--format markdown` | Markdown, e.g. `>> "$GITHUB_STEP_SUMMARY"` |
+| `--pr-comment` | In GitHub Actions, also post the report on the pull request (needs `GITHUB_TOKEN` with `pull-requests: write`) |
 | `--quiet` | Show problems only |
 | `--config <file>` | Another config file |
 

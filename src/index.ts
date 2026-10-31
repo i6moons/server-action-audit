@@ -2,5 +2,6 @@ export { analyzeModule, type ServerAction, type ActionStatus, type AnalyzeInput,
 export { resolveOptions, type AuditOptions, type ResolvedOptions } from './options.js'
 export { scanProject, loadConfig, type ProjectReport, type FileReport } from './scan.js'
 export { createNodeResolver, parseModule, resolveImportPath } from './resolve.js'
-export { formatPretty, formatJson, formatGithub, formatSarif } from './format.js'
+export { formatPretty, formatJson, formatGithub, formatMarkdown, formatSarif } from './format.js'
+export { pullRequestFromEnv, upsertComment, COMMENT_MARKER, type PullRequest } from './github.js'
 export { VERSION } from './version.js'

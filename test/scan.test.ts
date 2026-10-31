@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { formatGithub, formatJson, formatPretty, formatSarif, loadConfig, resolveImportPath, scanProject } from '../src/index.js'
+import { formatGithub, formatJson, formatMarkdown, formatPretty, formatSarif, loadConfig, resolveImportPath, scanProject } from '../src/index.js'
 
 const root = fileURLToPath(new URL('./fixtures/next-app', import.meta.url))
 
@@ -49,6 +49,26 @@ describe('scanProject', () => {
     )
     expect(lines.filter((line) => line.startsWith('::error'))).toHaveLength(2)
     expect(lines.filter((line) => line.startsWith('::warning'))).toHaveLength(4)
+  })
+
+  it('prints a Markdown table of the problems, linked to the code', () => {
+    const markdown = formatMarkdown(report, { sourceUrl: 'https://github.com/acme/shop/blob/f00/' })
+    expect(markdown).toContain('**❌ 2 unprotected** · 3 protected · 1 public · **⚠️ 4 with unvalidated input** (6 Server Actions in 3 files)')
+    expect(markdown).toContain(
+      '| ❌ | `deletePost` | [app/(dashboard)/posts/actions.ts:16](https://github.com/acme/shop/blob/f00/app/%28dashboard%29/posts/actions.ts#L16) | No authorization check, input not validated |',
+    )
+    expect(markdown).toContain('| ⚠️ | `updatePost` | [app/(dashboard)/posts/actions.ts:20](https://github.com/acme/shop/blob/f00/app/%28dashboard%29/posts/actions.ts#L20) | Input not validated |')
+    expect(markdown.split('\n').filter((line) => line.startsWith('| ❌'))).toHaveLength(2)
+    expect(markdown.split('\n').filter((line) => line.startsWith('| ⚠️'))).toHaveLength(2)
+    expect(formatMarkdown(report)).toContain('| `app/(dashboard)/posts/actions.ts:16` |')
+    const short = formatMarkdown(report, { limit: 3 })
+    expect(short.split('\n').filter((line) => /^\| (❌|⚠️)/.test(line))).toHaveLength(3)
+    expect(short).toContain('…and 1 more.')
+  })
+
+  it('says so when there is nothing to fix', () => {
+    const clean = { ...report, files: [], summary: { actions: 2, protected: 2, unprotected: 0, public: 0, unvalidated: 0 } }
+    expect(formatMarkdown(clean)).toBe('### server-action-audit\n\n✅ 2 Server Actions in 0 files, no problems found.')
   })
 
   it('prints valid SARIF 2.1.0', () => {
