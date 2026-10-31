@@ -4,6 +4,7 @@
 
 [![CI](https://github.com/i6moons/server-action-audit/actions/workflows/ci.yml/badge.svg)](https://github.com/i6moons/server-action-audit/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/server-action-audit?color=cb3837)](https://www.npmjs.com/package/server-action-audit)
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Server%20Action%20Audit-2088FF?logo=githubactions&logoColor=white)](https://github.com/marketplace/actions/server-action-audit)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 Every `"use server"` function is a public HTTP endpoint. Anyone can call it with a POST request, from outside your UI, with any arguments. The [Next.js docs](https://nextjs.org/docs/app/guides/data-security) put it plainly: an auth check on the page does not protect the Server Actions defined in it, so each action has to check the session itself.
