@@ -37,7 +37,8 @@ export async function subscribe(email: string) {}
 Tout est décrit dans le [README en anglais](README.md#configuration) :
 - le fichier `server-action-audit.config.json` ;
 - le plugin ESLint (`server-action-audit/eslint`) ;
-- les options `--fail-on`, `--json` et `--quiet`.
+- les options `--fail-on`, `--json` et `--quiet` ;
+- l'Action GitHub, qui annote les pull requests et peut aussi y poster le rapport en commentaire (`comment: true`).
 
 ## Limites
 

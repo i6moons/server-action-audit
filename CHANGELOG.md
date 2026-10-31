@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 (unreleased)
+
+- `--pr-comment`: in GitHub Actions, posts the report as a comment on the pull request through the GitHub REST API, and updates that same comment on every push. A pull request with nothing to fix gets no comment. If the token can't write (forks, missing `pull-requests: write`), it shows a warning and keeps the exit code.
+- GitHub Action: `comment` and `github-token` inputs for the above.
+- `--format markdown`: a summary table with links to the code, for job summaries.
+
 ## 0.1.0 (2026-10-27)
 
 First release.

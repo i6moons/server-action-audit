@@ -1,6 +1,6 @@
 {
   "name": "server-action-audit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Find Next.js Server Actions that anyone can call: a CLI and an ESLint plugin that flag \"use server\" functions without an authorization check or input validation.",
   "keywords": [
     "nextjs",

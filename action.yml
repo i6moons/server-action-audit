@@ -14,6 +14,12 @@ inputs:
   version:
     description: Version of server-action-audit from npm.
     default: latest
+  comment:
+    description: Also post the report as a comment on the pull request, updated on every push. The job needs `pull-requests write` permission.
+    default: 'false'
+  github-token:
+    description: Token used to post the comment.
+    default: ${{ github.token }}
 
 runs:
   using: composite
@@ -24,4 +30,9 @@ runs:
         AUDIT_PATH: ${{ inputs.path }}
         AUDIT_FAIL_ON: ${{ inputs.fail-on }}
         AUDIT_VERSION: ${{ inputs.version }}
-      run: npx --yes "server-action-audit@${AUDIT_VERSION}" "${AUDIT_PATH}" --format github --fail-on "${AUDIT_FAIL_ON}"
+        AUDIT_COMMENT: ${{ inputs.comment }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      run: |
+        args=("${AUDIT_PATH}" --format github --fail-on "${AUDIT_FAIL_ON}")
+        if [ "${AUDIT_COMMENT}" = "true" ]; then args+=(--pr-comment); fi
+        npx --yes "server-action-audit@${AUDIT_VERSION}" "${args[@]}"
