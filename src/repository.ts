@@ -17,9 +17,9 @@ function inside(parent: string, path: string): boolean {
  * directories inside the workspace count, and the workspace is the root when the checkout has no `.git` (no git
  * on the runner).
  */
-export function repositoryPath(root: string, workspace = process.env.GITHUB_WORKSPACE): string | undefined {
+export function repositoryPath(root: string, env: NodeJS.ProcessEnv = process.env): string | undefined {
   const dir = resolve(root)
-  const top = workspace ? resolve(workspace) : undefined
+  const top = env.GITHUB_WORKSPACE ? resolve(env.GITHUB_WORKSPACE) : undefined
   if (top !== undefined && !inside(top, dir)) return undefined
   for (let current = dir; ; current = dirname(current)) {
     if (existsSync(join(current, '.git'))) return posix(relative(current, dir))

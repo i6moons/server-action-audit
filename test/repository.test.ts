@@ -20,29 +20,29 @@ function tree(name: string, dirs: string[], gitFile?: string): string {
 describe('repositoryPath', () => {
   it('gives the path of an app inside a repository, from its root', () => {
     const repo = tree('monorepo', ['.git', 'apps/web'])
-    expect(repositoryPath(join(repo, 'apps/web'), undefined)).toBe('apps/web')
-    expect(repositoryPath(repo, undefined)).toBe('')
+    expect(repositoryPath(join(repo, 'apps/web'), {})).toBe('apps/web')
+    expect(repositoryPath(repo, {})).toBe('')
   })
 
   it('accepts a .git file, as in worktrees and submodules', () => {
     const repo = tree('worktree', ['apps/web'], '.git')
-    expect(repositoryPath(join(repo, 'apps/web'), undefined)).toBe('apps/web')
+    expect(repositoryPath(join(repo, 'apps/web'), {})).toBe('apps/web')
   })
 
   it('finds a repository checked out in a subfolder of the workspace', () => {
     const workspace = tree('checkout-path', ['repo/.git', 'repo/apps/web'])
-    expect(repositoryPath(join(workspace, 'repo/apps/web'), workspace)).toBe('apps/web')
+    expect(repositoryPath(join(workspace, 'repo/apps/web'), { GITHUB_WORKSPACE: workspace })).toBe('apps/web')
   })
 
   it('counts the workspace as the root of a checkout without .git, and never looks above it', () => {
     const outer = tree('no-git', ['.git', 'workspace/apps/web'])
     const workspace = join(outer, 'workspace')
-    expect(repositoryPath(join(workspace, 'apps/web'), workspace)).toBe('apps/web')
+    expect(repositoryPath(join(workspace, 'apps/web'), { GITHUB_WORKSPACE: workspace })).toBe('apps/web')
   })
 
   it('gives nothing for a directory outside the workspace', () => {
     const outer = tree('outside', ['.git', 'workspace', 'other/app'])
-    expect(repositoryPath(join(outer, 'other/app'), join(outer, 'workspace'))).toBeUndefined()
+    expect(repositoryPath(join(outer, 'other/app'), { GITHUB_WORKSPACE: join(outer, 'workspace') })).toBeUndefined()
   })
 })
 
