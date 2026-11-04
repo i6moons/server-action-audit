@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.1 (unreleased)
+
+- Fix: in a monorepo (`path: apps/web` in the Action, or `npx server-action-audit apps/web`), annotations used paths from the app's folder (`app/actions.ts`) instead of the repository root (`apps/web/app/actions.ts`), so GitHub could not show them on the line in the pull request. The `github`, `sarif` and `markdown` formats and the pull request comment now use paths from the repository root. The `pretty` and `json` formats are unchanged.
+
+## 0.2.0 (2026-10-31)
 
 - `--pr-comment`: in GitHub Actions, posts the report as a comment on the pull request through the GitHub REST API, and updates that same comment on every push. A pull request with nothing to fix gets no comment. If the token can't write (forks, missing `pull-requests: write`), it shows a warning and keeps the exit code.
 - GitHub Action: `comment` and `github-token` inputs for the above.

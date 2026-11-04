@@ -1,6 +1,7 @@
-import { isAbsolute, relative, resolve, sep } from 'node:path'
+import { resolve } from 'node:path'
 import { formatGithub, formatJson, formatMarkdown, formatPretty, formatSarif } from './format.js'
 import { pullRequestFromEnv, upsertComment } from './github.js'
+import { fromRepositoryRoot, repositoryPath } from './repository.js'
 import { loadConfig, scanProject, type ProjectReport } from './scan.js'
 import { VERSION } from './version.js'
 
@@ -28,15 +29,11 @@ Options
 Exit codes: 0 ok, 1 problems found, 2 usage error.
 `
 
-/** The link prefix for files of the scanned directory, when it is inside the checked-out repository. */
-function sourceUrl(root: string, serverUrl: string, repository: string, sha: string | undefined): string | undefined {
-  const path = relative(process.env.GITHUB_WORKSPACE || process.cwd(), root)
-  if (!sha || path.startsWith('..') || isAbsolute(path)) return undefined
-  return `${serverUrl}/${repository}/blob/${sha}/${path ? `${path.split(sep).join('/')}/` : ''}`
-}
-
-/** Never changes the exit code: a missing permission must not fail the audit. */
-async function commentOnPullRequest(report: ProjectReport, root: string): Promise<void> {
+/**
+ * Never changes the exit code: a missing permission must not fail the audit. `report` has its paths from the
+ * repository root when `inRepository` is true, so they can be appended to a link to the commit.
+ */
+async function commentOnPullRequest(report: ProjectReport, inRepository: boolean): Promise<void> {
   let pr
   try {
     pr = pullRequestFromEnv()
@@ -49,7 +46,8 @@ async function commentOnPullRequest(report: ProjectReport, root: string): Promis
   }
   const { unprotected, unvalidated } = report.summary
   try {
-    const body = formatMarkdown(report, { sourceUrl: sourceUrl(root, pr.serverUrl, pr.repository, pr.headSha) })
+    const sourceUrl = inRepository && pr.headSha ? `${pr.serverUrl}/${pr.repository}/blob/${pr.headSha}/` : undefined
+    const body = formatMarkdown(report, { sourceUrl })
     const result = await upsertComment(pr, body, { clean: !unprotected && !unvalidated })
     const done = { created: 'commented on', updated: 'updated its comment on', skipped: 'nothing new to post on' }[result]
     process.stderr.write(`--pr-comment: ${done} pull request #${pr.number}.\n`)
@@ -106,18 +104,22 @@ async function main(argv: string[]): Promise<number> {
     process.stderr.write(`server-action-audit: ${(error as Error).message}\n`)
     return 2
   }
+  // What GitHub reads (annotations, code scanning, pull request comments) needs paths from the repository
+  // root, while the terminal and JSON keep them from the scanned directory
+  const repoPath = repositoryPath(root)
+  const forGithub = repoPath === undefined ? report : fromRepositoryRoot(report, repoPath)
   const output =
     format === 'json'
       ? formatJson(report)
       : format === 'github'
-        ? formatGithub(report)
+        ? formatGithub(forGithub)
         : format === 'sarif'
-          ? formatSarif(report, VERSION)
+          ? formatSarif(forGithub, VERSION)
           : format === 'markdown'
-            ? formatMarkdown(report)
+            ? formatMarkdown(forGithub)
             : formatPretty(report, { quiet })
   process.stdout.write(`${output}\n`)
-  if (prComment) await commentOnPullRequest(report, root)
+  if (prComment) await commentOnPullRequest(forGithub, repoPath !== undefined)
 
   const { unprotected, unvalidated } = report.summary
   if (failOn === 'unprotected' && unprotected) return 1

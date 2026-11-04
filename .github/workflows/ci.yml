@@ -28,3 +28,9 @@ jobs:
         run: |
           node dist/cli.js test/fixtures/next-app --json > report.json || true
           node -e "const r=require('./report.json'); if (r.summary.unprotected !== 2) process.exit(1)"
+      # The fixture is a subfolder of this repository, like an app in a monorepo. Written to a file
+      # so the runner does not turn the lines into annotations
+      - name: Annotations use paths from the repository root
+        run: |
+          node dist/cli.js test/fixtures/next-app --format github --fail-on never > annotations.txt
+          grep -q '^::error file=test/fixtures/next-app/app/' annotations.txt

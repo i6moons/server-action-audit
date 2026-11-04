@@ -115,6 +115,8 @@ jobs:
           fail-on: unprotected
 ```
 
+In a monorepo, set `path` to the app's folder, like `apps/web`. Annotations, comment links and SARIF results still point to the right file, with its path from the repository root.
+
 To also get the report as a comment on the pull request, set `comment: true` and let the job write to pull requests. The action keeps a single comment and updates it on every push. It only comments once there is something to fix. If the job can't comment (pull requests from forks only get a read-only token), it shows a warning and the audit result stays the same.
 
 ```yaml
