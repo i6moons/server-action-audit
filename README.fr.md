@@ -38,7 +38,7 @@ Tout est décrit dans le [README en anglais](README.md#configuration) :
 - le fichier `server-action-audit.config.json` ;
 - le plugin ESLint (`server-action-audit/eslint`) ;
 - les options `--fail-on`, `--json` et `--quiet` ;
-- l'Action GitHub, qui annote les pull requests et peut aussi y poster le rapport en commentaire (`comment: true`).
+- l'Action GitHub, qui annote les pull requests et peut aussi y poster le rapport en commentaire (`comment: true`). Dans un monorepo, indiquez le dossier de l'application avec `path` (par exemple `apps/web`).
 
 ## Limites
 
