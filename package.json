@@ -27,6 +27,9 @@
   },
   "bugs": "https://github.com/i6moons/server-action-audit/issues",
   "type": "module",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=20"
   },
